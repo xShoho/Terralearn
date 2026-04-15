@@ -1,8 +1,44 @@
-resource "aws_vpc" "terralearn_vpc" {
+# Setting up VPC
+
+resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cdir
   region     = var.region
 
   tags = {
     Name = "terralearn_vpc"
+  }
+}
+
+# Set up public and private subnets
+
+resource "aws_subnet" "vpc_public_subnet" {
+  vpc_id            = aws_vpc.vpc.id
+  count             = length(var.vpc_public_subnet)
+  cidr_block        = element(var.vpc_public_subnet, count.index)
+  availability_zone = element(var.vpc_subnets_availability_zone, count.index)
+
+  tags = {
+    Name = "terralearn_subnet_public_${count.index + 1}"
+  }
+}
+
+resource "aws_subnet" "vpc_private_subnet" {
+  vpc_id            = aws_vpc.vpc.id
+  count             = length(var.vpc_private_subnet)
+  cidr_block        = element(var.vpc_private_subnet, count.index)
+  availability_zone = element(var.vpc_subnets_availability_zone, count.index)
+
+  tags = {
+    Name = "terralearn_subnet_private_${count.index + 1}"
+  }
+}
+
+# Set up internet gateway for public subnets
+
+resource "aws_internet_gateway" "vpc_internet_gateway" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "terralearn_vpc_internet_gateway"
   }
 }

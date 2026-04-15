@@ -17,3 +17,8 @@ variable "vpc_private_subnet" {
   type    = list(string)
   default = ["10.0.3.0/24", "10.0.4.0/24"]
 }
+
+variable "vpc_subnets_availability_zone" {
+  type    = list(string)
+  default = ["eun1-az1", "eun1-az2"]
+}
