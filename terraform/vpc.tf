@@ -42,3 +42,43 @@ resource "aws_internet_gateway" "vpc_internet_gateway" {
     Name = "terralearn_vpc_internet_gateway"
   }
 }
+
+# Setting up rout tables for networks
+
+# Private rt
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.vpc.id
+  count  = length(var.vpc_private_subnet)
+
+  tags = {
+    Name = "terralearn_private_network_rt_${count.index + 1}"
+  }
+}
+
+resource "aws_route_table_association" "private_association" {
+  count          = length(var.vpc_private_subnet)
+  subnet_id      = aws_subnet.vpc_private_subnet[count.index].id
+  route_table_id = aws_route_table.private[count.index].id
+}
+
+# Public rt
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.vpc_internet_gateway.id
+  }
+
+  tags = {
+    Name = "terralearn_public_network_rt"
+  }
+}
+
+resource "aws_route_table_association" "public_association" {
+  count          = length(var.vpc_public_subnet)
+  route_table_id = aws_route_table.public.id
+  subnet_id      = aws_subnet.vpc_public_subnet[count.index].id
+}
