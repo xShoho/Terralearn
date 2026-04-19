@@ -1,3 +1,5 @@
+# Setting up provider and backend to save tfstate file
+
 terraform {
   required_providers {
     aws = {
