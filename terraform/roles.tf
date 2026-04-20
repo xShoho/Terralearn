@@ -42,3 +42,8 @@ resource "aws_iam_policy" "ecs_task_execution_role_policy" {
     }]
   })
 }
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_attach_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_task_execution_role_policy.arn
+}
