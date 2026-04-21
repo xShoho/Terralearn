@@ -1,3 +1,5 @@
+# Defining cluster and task definition
+
 resource "aws_ecs_cluster" "ecs_cluster" {
   name = "terralearn-cluster"
 
