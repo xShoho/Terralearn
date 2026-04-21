@@ -6,8 +6,4 @@ resource "aws_lb" "lb" {
   subnets            = [for subnet in aws_subnet.vpc_public_subnet : subnet.id]
 
   enable_deletion_protection = false
-
-  tags = {
-    Environment = "production"
-  }
 }
