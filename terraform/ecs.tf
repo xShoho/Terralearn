@@ -51,5 +51,9 @@ resource "aws_ecs_service" "ecs_service" {
     container_port   = 80
   }
 
-  # TODO Network configuration into private after setting up vpc-endpoints
+  network_configuration {
+    assign_public_ip = false
+    subnets = aws_subnet.vpc_private_subnet[*].id
+    security_groups = [aws_security_group.ecs_sg.id]
+  }
 }
