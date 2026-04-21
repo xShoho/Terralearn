@@ -62,3 +62,13 @@ resource "aws_security_group_rule" "alb_sg_egress" {
   security_group_id        = aws_security_group.alb_sg.id
   source_security_group_id = aws_security_group.ecs_sg.id
 }
+
+# Egress rule thet allows load balancer to send responses to internet
+resource "aws_security_group_rule" "alg_sg_egress_internet" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  security_group_id = aws_security_group.alb_sg.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}
