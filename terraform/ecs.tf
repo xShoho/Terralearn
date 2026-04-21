@@ -37,3 +37,23 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
     }
   ])
 }
+
+resource "aws_ecs_service" "ecs_service" {
+  name            = "terralearn-nginx"
+  cluster         = aws_ecs_cluster.ecs_cluster.id
+  task_definition = aws_ecs_task_definition.ecs_task_definition.arn
+  desired_count   = 2
+  launch_type     = "FARGATE"
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.lb_target_group.arn
+    container_name   = "nginx"
+    container_port   = 80
+  }
+
+  network_configuration {
+    assign_public_ip = false
+    subnets = aws_subnet.vpc_private_subnet[*].id
+    security_groups = [aws_security_group.ecs_sg.id]
+  }
+}
