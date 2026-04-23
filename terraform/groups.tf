@@ -72,12 +72,3 @@ resource "aws_security_group_rule" "alg_sg_egress_internet" {
   security_group_id = aws_security_group.alb_sg.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
-
-resource "aws_security_group_rule" "vpc_endpoint_sg_egress" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  security_group_id = aws_security_group.vpc_endpoint_sg.id
-  cidr_blocks       = ["0.0.0.0/0"]
-}
