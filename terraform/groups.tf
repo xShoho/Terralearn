@@ -23,19 +23,11 @@ resource "aws_security_group" "ecs_sg" {
     security_groups = [aws_security_group.alb_sg.id]
   }
 
-  tags = {
-    Name = "terralearn_ecs_sg"
-  }
-}
-
-resource "aws_security_group" "vpc_endpoint_sg" {
-  vpc_id = aws_vpc.vpc.id
-
   ingress {
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.ecs_sg.id]
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -46,18 +38,8 @@ resource "aws_security_group" "vpc_endpoint_sg" {
   }
 
   tags = {
-    Name = "terralearn_vpc_endpoint_sg"
+    Name = "terralearn_ecs_sg"
   }
-}
-
-# Egress rule for ecs_sg to prevent circular reference
-resource "aws_security_group_rule" "ecs_sg_egress" {
-  type                     = "egress"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.ecs_sg.id
-  source_security_group_id = aws_security_group.vpc_endpoint_sg.id
 }
 
 # Egress rule for alb_sg to prevent circular reference
