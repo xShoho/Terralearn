@@ -38,6 +38,13 @@ resource "aws_security_group" "vpc_endpoint_sg" {
     security_groups = [aws_security_group.ecs_sg.id]
   }
 
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
     Name = "terralearn_vpc_endpoint_sg"
   }
