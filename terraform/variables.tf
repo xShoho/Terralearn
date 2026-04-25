@@ -20,5 +20,10 @@ variable "vpc_private_subnet" {
 
 variable "vpc_subnets_availability_zone" {
   type    = list(string)
-  default = ["eun1-az1", "eun1-az2"]
+  default = ["eu-north-1a", "eu-north-1b"]
+}
+
+variable "ecr_image" {
+  type    = string
+  default = "803283181124.dkr.ecr.eu-north-1.amazonaws.com/kamil-repository:latest"
 }

@@ -1,8 +1,9 @@
 # Setting up VPC
 
 resource "aws_vpc" "vpc" {
-  cidr_block = var.vpc_cdir
-  region     = var.region
+  cidr_block           = var.vpc_cdir
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "terralearn_vpc"
@@ -41,6 +42,28 @@ resource "aws_internet_gateway" "vpc_internet_gateway" {
   tags = {
     Name = "terralearn_vpc_internet_gateway"
   }
+}
+
+# Set up nat gateway for private subnets
+
+resource "aws_eip" "eip" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat_gw" {
+  allocation_id = aws_eip.eip.id
+  subnet_id     = aws_subnet.vpc_public_subnet[0].id
+
+  tags = {
+    Name = "terralearn_nat_gateway"
+  }
+}
+
+resource "aws_route" "private_nat" {
+  count                  = length(var.vpc_private_subnet)
+  route_table_id         = aws_route_table.private[count.index].id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat_gw.id
 }
 
 # Setting up rout tables for networks
